@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PokéWallet Web Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Colecciones Pokemon</h1>
+
+      <section class="panel">
+        <div class="row">
+          <input id="setFilter" type="text" placeholder="Filtrar sets por nombre, codigo, idioma o set_id..." />
+          <select id="setSelect">
+            <option value="">Selecciona un set...</option>
+          </select>
+          <button id="loadSetsBtn">Cargar sets</button>
+        </div>
+        <p id="statusText">Pulsa "Cargar sets" para empezar.</p>
+      </section>
+
+      <section class="panel">
+        <div class="row">
+          <label for="columnFilter">Filtro tabla:</label>
+          <select id="columnFilter"></select>
+          <input id="tableFilter" type="text" placeholder="Filtrar cartas..." />
+          <button id="loadPricesBtn" disabled>Cargar precios de la seleccion</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="table-wrap">
+          <table id="cardsTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+  </body>
+  </html>
