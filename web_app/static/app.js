@@ -35,6 +35,22 @@ function setStatus(text) {
   statusText.textContent = text;
 }
 
+async function parseJsonResponse(res) {
+  const contentType = res.headers.get("content-type") || "";
+  const text = await res.text();
+  if (!contentType.includes("application/json")) {
+    const preview = text.replace(/\s+/g, " ").trim().slice(0, 180);
+    throw new Error(
+      `Respuesta no JSON (${res.status}). ¿La ruta /api no llega a Flask en Vercel? ${preview}`
+    );
+  }
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    throw new Error(`JSON inválido (${res.status}): ${text.slice(0, 120)}`);
+  }
+}
+
 function toRowData(card) {
   const info = card.card_info || {};
   return {
@@ -178,7 +194,7 @@ async function loadSets() {
   setStatus("Cargando sets...");
   try {
     const res = await fetch("/api/sets");
-    const data = await res.json();
+    const data = await parseJsonResponse(res);
     if (!res.ok) throw new Error(data.error || "No se pudieron cargar sets");
     allSets = data.sets || [];
     applySetFilter();
@@ -197,7 +213,7 @@ async function loadCardsForSelectedSet() {
   loadPricesBtn.disabled = true;
   try {
     const res = await fetch(`/api/sets/${encodeURIComponent(setId)}/cards`);
-    const data = await res.json();
+    const data = await parseJsonResponse(res);
     if (!res.ok) throw new Error(data.error || "No se pudieron cargar cartas");
     allCards = data.cards || [];
     renderTable(allCards);
@@ -228,7 +244,7 @@ async function loadPricesForSelection() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ card_ids: cardIds }),
     });
-    const data = await res.json();
+    const data = await parseJsonResponse(res);
     if (!res.ok) throw new Error(data.error || "No se pudieron cargar detalles");
 
     const byId = new Map();

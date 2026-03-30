@@ -31,3 +31,9 @@ python app.py
 ```
 
 Abre [http://localhost:5000](http://localhost:5000).
+
+## Deploy en Vercel
+
+- En el proyecto de Vercel, configura **Root Directory** como `web_app` (si el repo incluye más carpetas).
+- Añade la variable de entorno **`API_KEY`** en **Production** (y Preview si quieres).
+- Si en el navegador ves un error tipo «Unexpected token `<`» al cargar sets, suele ser que la respuesta es **HTML** (página de error) en lugar de JSON: revisa que `API_KEY` esté definida y que el deploy use el `vercel.json` de esta carpeta.
