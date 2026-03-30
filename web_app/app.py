@@ -11,12 +11,12 @@ BASE_URL = "https://api.pokewallet.io"
 def create_app() -> Flask:
     load_dotenv()
     api_key = os.getenv("API_KEY")
-    if not api_key:
-        raise ValueError("No se encontró API_KEY en el archivo .env")
 
     app = Flask(__name__)
 
     def api_get(path: str, *, params: dict[str, Any] | None = None) -> dict[str, Any]:
+        if not api_key:
+            raise RuntimeError("Falta API_KEY. Configúrala en variables de entorno de Vercel.")
         response = requests.get(
             f"{BASE_URL}{path}",
             headers={"X-API-Key": api_key},
@@ -87,6 +87,8 @@ def create_app() -> Flask:
     return app
 
 
+app = create_app()
+
+
 if __name__ == "__main__":
-    app = create_app()
     app.run(debug=True, port=5000)
