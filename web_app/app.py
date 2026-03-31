@@ -34,8 +34,9 @@ def create_app() -> Flask:
             f"{BASE_URL}{path}",
             headers={
                 "X-API-Key": api_key,
-                "User-Agent": "Mozilla/5.0",
-                "Accept": "application/json"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                "Accept": "application/json",
+                "Origin": "https://api.pokewallet.io"
             },
             params=params,
             timeout=30,
