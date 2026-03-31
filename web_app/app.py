@@ -32,7 +32,11 @@ def create_app() -> Flask:
             raise ValueError("Falta API_KEY. Configúrala en variables de entorno de Vercel (Project Settings).")
         response = requests.get(
             f"{BASE_URL}{path}",
-            headers={"X-API-Key": api_key},
+            headers={
+                "X-API-Key": api_key,
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json"
+            },
             params=params,
             timeout=30,
         )
