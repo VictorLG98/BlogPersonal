@@ -12,7 +12,7 @@ BASE_URL = "https://api.pokewallet.io"
 
 def create_app() -> Flask:
     load_dotenv()
-    api_key = os.getenv("API_KEY")
+    api_key = os.environ.get("API_KEY") or os.getenv("API_KEY")
 
     app = Flask(__name__)
 
