@@ -45,17 +45,49 @@ def create_app() -> Flask:
 
     @app.get("/api/sets")
     def get_sets():
+        debug_info = {
+            "api_key_exists": bool(os.getenv("API_KEY")),
+            "base_url": BASE_URL,
+        }
+
         try:
             payload = api_get("/sets")
         except ValueError as error:
-            return jsonify({"error": str(error)}), 503
+            return jsonify({
+                "error": str(error),
+                "debug": debug_info
+            }), 503
         except requests.RequestException as error:
-            return jsonify({"error": f"Error al contactar PokéWallet: {error}"}), 502
+            return jsonify({
+                "error": f"Error al contactar PokéWallet: {error}",
+                "debug": debug_info
+            }), 502
+        except Exception as error:
+            return jsonify({
+                "error": f"Error inesperado: {error}",
+                "debug": debug_info
+            }), 500
+
         if not payload.get("success"):
-            return jsonify({"error": "La API no devolvió success al cargar sets."}), 502
+            return jsonify({
+                "error": "La API no devolvió success al cargar sets.",
+                "debug": debug_info,
+                "payload": payload  # esto es clave para ver qué devuelve realmente
+            }), 502
+
         sets_data = payload.get("data", [])
-        sets_data.sort(key=lambda item: ((item.get("name") or "").lower(), item.get("set_id") or ""))
-        return jsonify({"sets": sets_data})
+        sets_data.sort(
+            key=lambda item: (
+                (item.get("name") or "").lower(),
+                item.get("set_id") or ""
+            )
+        )
+
+        return jsonify({
+            "sets": sets_data,
+            "debug": debug_info,
+            "count": len(sets_data)
+        })
 
     @app.get("/api/sets/<set_id>/cards")
     def get_set_cards(set_id: str):
